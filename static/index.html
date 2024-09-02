@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Backend Demo</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> <!-- External CSS for better maintainability -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .container {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="text-center my-5">CRM Backend Demo</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- API Overview Section -->
+            <section aria-labelledby="api-overview">
+                <div class="card">
+                    <div class="card-header" id="api-overview">
+                        API Overview
+                    </div>
+                    <div class="card-body">
+                        <p>This API allows you to perform CRUD (Create, Read, Update, Delete) operations on customer data. Below are the available endpoints:</p>
+                        <ul>
+                            <li><strong>GET /customers</strong>: Retrieves a list of all customers.</li>
+                            <li><strong>GET /customers/{id}</strong>: Retrieves data for a single customer by their ID.</li>
+                            <li><strong>POST /customers</strong>: Adds a new customer. Requires a JSON body with customer details.</li>
+                            <li><strong>PUT /customers/{id}</strong>: Updates an existing customer's information. Requires a JSON body with the updated details.</li>
+                            <li><strong>DELETE /customers/{id}</strong>: Deletes a customer by their ID.</li>
+                        </ul>
+                        <p>All responses from the API are in JSON format, and each endpoint requires the appropriate HTTP method (GET, POST, PUT, DELETE).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Form to Add a Customer -->
+            <section aria-labelledby="add-customer">
+                <div class="card">
+                    <div class="card-header" id="add-customer">
+                        Add a Customer
+                    </div>
+                    <div class="card-body">
+                        <form id="addCustomerForm">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="name">Name:</label>
+                                    <input type="text" id="name" name="name" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="role">Role:</label>
+                                    <input type="text" id="role" name="role" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="email">Email:</label>
+                                    <input type="email" id="email" name="email" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="phone">Phone:</label>
+                                    <input type="text" id="phone" name="phone" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="address">Address:</label>
+                                    <input type="text" id="address" name="address" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="contacted">Contacted:</label>
+                                    <select id="contacted" name="contacted" class="form-control" required>
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-custom btn-block">Add Customer</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section to Get All Customers -->
+            <section aria-labelledby="get-all-customers">
+                <div class="card">
+                    <div class="card-header" id="get-all-customers">
+                        Get All Customers
+                    </div>
+                    <div class="card-body">
+                        <button id="getCustomersBtn" class="btn btn-custom mb-3">Get Customers</button>
+                        <pre id="customersList"></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section to Get a Single Customer -->
+            <section aria-labelledby="get-single-customer">
+                <div class="card">
+                    <div class="card-header" id="get-single-customer">
+                        Get a Single Customer
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="getCustomerId">Enter Customer ID:</label>
+                                <input type="number" id="getCustomerId" class="form-control" placeholder="Customer ID">
+                            </div>
+                            <div class="form-group col-md-6 d-flex align-items-end">
+                                <button id="getCustomerBtn" class="btn btn-custom btn-block">Get Customer</button>
+                            </div>
+                        </div>
+                        <pre id="singleCustomer"></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section to Update a Customer -->
+            <section aria-labelledby="update-customer">
+                <div class="card">
+                    <div class="card-header" id="update-customer">
+                        Update a Customer
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="updateCustomerId">Enter Customer ID:</label>
+                                <input type="number" id="updateCustomerId" class="form-control" placeholder="Customer ID" required>
+                            </div>
+                        </div>
+                        <form id="updateCustomerForm">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="updateName">Name:</label>
+                                    <input type="text" id="updateName" name="name" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="updateRole">Role:</label>
+                                    <input type="text" id="updateRole" name="role" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="updateEmail">Email:</label>
+                                    <input type="email" id="updateEmail" name="email" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="updatePhone">Phone:</label>
+                                    <input type="text" id="updatePhone" name="phone" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="updateAddress">Address:</label>
+                                    <input type="text" id="updateAddress" name="address" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="updateContacted">Contacted:</label>
+                                    <select id="updateContacted" name="contacted" class="form-control" required>
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-warning btn-block">Update Customer</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section to Delete a Customer -->
+            <section aria-labelledby="delete-customer">
+                <div class="card">
+                    <div class="card-header" id="delete-customer">
+                        Delete a Customer
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="deleteCustomerId">Enter Customer ID:</label>
+                                <input type="number" id="deleteCustomerId" class="form-control" placeholder="Customer ID">
+                            </div>
+                            <div class="form-group col-md-6 d-flex align-items-end">
+                                <button id="deleteCustomerBtn" class="btn btn-danger btn-block">Delete Customer</button>
+                            </div>
+                        </div>
+                        <pre id="deleteResponse"></pre>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="text-center mt-5">
+        <p>&copy; 2024 CRM Backend Demo</p>
+    </footer>
+
+    <script src="scripts.js"></script> <!-- External JS for better maintainability -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to handle form submission for adding a customer
+            document.getElementById('addCustomerForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                handleFormSubmit('/customers', 'POST', {
+                    name: document.getElementById('name').value,
+                    role: document.getElementById('role').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    contacted: document.getElementById('contacted').value === 'true'
+                }, function(data) {
+                    alert('Customer added successfully');
+                    console.log(data);
+                });
+            });
+
+            // Function to get all customers
+            document.getElementById('getCustomersBtn').addEventListener('click', function() {
+                fetchData('/customers', 'GET', null, function(data) {
+                    document.getElementById('customersList').textContent = JSON.stringify(data, null, 2);
+                });
+            });
+
+            // Function to get a single customer by ID
+            document.getElementById('getCustomerBtn').addEventListener('click', function() {
+                const customerId = document.getElementById('getCustomerId').value;
+                fetchData(`/customers/${customerId}`, 'GET', null, function(data) {
+                    document.getElementById('singleCustomer').textContent = JSON.stringify(data, null, 2);
+                }, function(error) {
+                    document.getElementById('singleCustomer').textContent = error.message;
+                });
+            });
+
+            // Function to handle form submission for updating a customer
+            document.getElementById('updateCustomerForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const customerId = document.getElementById('updateCustomerId').value;
+                handleFormSubmit(`/customers/${customerId}`, 'PUT', {
+                    name: document.getElementById('updateName').value,
+                    role: document.getElementById('updateRole').value,
+                    email: document.getElementById('updateEmail').value,
+                    phone: document.getElementById('updatePhone').value,
+                    address: document.getElementById('updateAddress').value,
+                    contacted: document.getElementById('updateContacted').value === 'true'
+                }, function(data) {
+                    alert('Customer updated successfully');
+                    console.log(data);
+                });
+            });
+
+            // Function to delete a customer by ID
+            document.getElementById('deleteCustomerBtn').addEventListener('click', function() {
+                const customerId = document.getElementById('deleteCustomerId').value;
+                fetchData(`/customers/${customerId}`, 'DELETE', null, function(data) {
+                    document.getElementById('deleteResponse').textContent = `Customer ${customerId} deleted successfully.`;
+                }, function(error) {
+                    document.getElementById('deleteResponse').textContent = error.message;
+                });
+            });
+        });
+
+        // Helper function to handle form submission
+        function handleFormSubmit(url, method, body, onSuccess) {
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(onSuccess)
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Helper function to fetch data
+        function fetchData(url, method, body, onSuccess, onError) {
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: body ? JSON.stringify(body) : null
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(onSuccess)
+            .catch(onError ? onError : error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
